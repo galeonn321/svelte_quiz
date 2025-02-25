@@ -2,23 +2,28 @@
 	import { DotLottieSvelte } from '@lottiefiles/dotlottie-svelte';
 </script>
 
-<main class="flex h-screen items-center justify-center">
-	<section class="border-0.5 flex h-1/2 w-10/12 rounded-4xl border-blue-50 bg-white p-1 shadow-xl">
-		<div class="w-1/2 rounded-tl-4xl rounded-bl-4xl bg-sky-200">
-			<div class="ml-5 flex h-full flex-col justify-center">
-				<h1 class="text-3xl font-bold text-wrap text-sky-600">Welcome to world flags quiz</h1>
-				<h5 class="text-sm text-sky-500">how much do you know?</h5>
+<main class="flex h-screen items-center justify-center px-4">
+	<section
+		class="flex w-full max-w-4xl flex-col overflow-hidden rounded-4xl border border-blue-50 bg-white p-4 shadow-xl md:h-3/5 md:flex-row md:justify-between"
+	>
+		<div class="flex w-full items-center justify-center bg-sky-200 p-6 md:w-1/2">
+			<div class="text-center md:text-left">
+				<h1 class="text-2xl font-bold text-sky-600 sm:text-3xl">Welcome to World Flags Quiz</h1>
+				<h5 class="mt-2 text-lg font-medium text-sky-500">How much do you know?</h5>
 			</div>
 		</div>
-		<div class="flex h-auto w-1/2 flex-col items-center justify-center">
-			<div>
-				<DotLottieSvelte src="/planet.lottie" loop autoplay />
+
+		<div class="flex w-full flex-col items-center justify-center gap-4 p-6 md:w-1/2">
+			<div class="aspect-square w-full max-w-xs md:max-w-md">
+				<DotLottieSvelte src="./planet.lottie" loop autoplay />
 			</div>
+
 			<button
 				type="button"
-				class="me-2 mb-2 rounded-full bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-				>Begin</button
+				class="rounded-full bg-blue-700 px-6 py-3 text-white transition hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 			>
+				Begin
+			</button>
 		</div>
 	</section>
 </main>
