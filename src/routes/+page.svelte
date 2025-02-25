@@ -1,7 +1,9 @@
 <script>
 </script>
 
-<div>haha</div>
-<h1>Welcome to SvelteKit</h1>
-<p>seonc</p>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<main class="flex h-screen items-center justify-center">
+	<section class="">
+		<icon name="plus" size="large" />
+		<h1>Welcome to the world flags quiz!</h1>
+	</section>
+</main>
