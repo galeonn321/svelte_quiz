@@ -3,6 +3,9 @@
   "workspaces": {
     "": {
       "name": "quiz-flags-svelte",
+      "dependencies": {
+        "@lottiefiles/dotlottie-svelte": "^0.4.6",
+      },
       "devDependencies": {
         "@eslint/compat": "^1.2.5",
         "@eslint/js": "^9.18.0",
@@ -114,6 +117,10 @@
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.0", "", {}, "sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ=="],
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.25", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ=="],
+
+    "@lottiefiles/dotlottie-svelte": ["@lottiefiles/dotlottie-svelte@0.4.6", "", { "dependencies": { "@lottiefiles/dotlottie-web": "0.40.1" }, "peerDependencies": { "svelte": "^4.0.0" } }, "sha512-s5JxftcD73GUszRx+jz4qmIcZtCGLNrmYhXrppWwE2GoAWKngI8IYTp2oFw6yd9QwW8ipcTU2rrPuINSS0P1bA=="],
+
+    "@lottiefiles/dotlottie-web": ["@lottiefiles/dotlottie-web@0.40.1", "", {}, "sha512-iNz1rr8zRTSJ0xCZEPeoCX6YnaNhBdkF7gJWhSa8bwB4NTrYZm0vAuC0jF/aLLhU7q9nf6ykxffrz0Sf4JPSPg=="],
 
     "@nodelib/fs.scandir": ["@nodelib/fs.scandir@2.1.5", "", { "dependencies": { "@nodelib/fs.stat": "2.0.5", "run-parallel": "^1.1.9" } }, "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="],
 
