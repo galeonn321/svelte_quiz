@@ -1,13 +1,22 @@
 <script lang="ts">
 	import { DotLottieSvelte } from '@lottiefiles/dotlottie-svelte';
-	import { onMount } from 'svelte';
-	import type { CountriesTypes } from '../../types/fetchCountries';
+	import type { CountriesList, CountriesTypes } from '../../types/fetchCountries';
+	import type { Option, QuestionType } from '../../types/questionType';
 	import { fetchCountries } from '$lib/api/fetchCountriesAPI';
 
-	let totalCountries: CountriesTypes[] = [];
-	let currentQuestion = 0 | 1 | 2 | 3;
-	let options: string[] = [];
-	let progress = 0 | 1 | 2 | 3;
+	let totalCountries: CountriesList = [];
+	let currentQuestionData: QuestionType = $state({
+		flag: '',
+		options: []
+	});
+	let progress = $state(1);
+	let results: boolean[] = [];
+
+	// $inspect(currentQuestionData, 'this is current question data');
+	$inspect(currentQuestionData.options, 'this is current question data options');
+	console.log(results, 'this is current results');
+	// $inspect(results, 'this is current results');
+	// $inspect(progress, 'this is current progress');
 
 	// Fetch the data from the API
 	$effect(() => {
@@ -15,15 +24,98 @@
 			const countries = await fetchCountries();
 			if (countries) {
 				totalCountries = countries;
+				const options = createOptions();
+				currentQuestionData = {
+					flag: options[0],
+					options: options[1]
+				};
 			}
 		})();
 	});
 
-	//create the options
+	function getRandomNumber(excludedIndexes: Set<number> = new Set()): number {
+		let randomNumber;
+		do {
+			randomNumber = Math.floor(Math.random() * totalCountries.length);
+		} while (excludedIndexes.has(randomNumber)); // Ensure uniqueness
+		return randomNumber;
+	}
+
+	// Create options
+	function createOptions() {
+		const usedIndexes = new Set<number>();
+
+		// Correct answer
+		const correctIndex = getRandomNumber();
+		usedIndexes.add(correctIndex);
+		const correctCountryName = totalCountries[correctIndex].name.common;
+		const correctCountryFlag = totalCountries[correctIndex].flags.png;
+
+		// Generate wrong answers
+		let wrongAnswers: { name: string }[] = [];
+		while (wrongAnswers.length < 3) {
+			const wrongIndex = getRandomNumber(usedIndexes);
+			usedIndexes.add(wrongIndex);
+			wrongAnswers.push({ name: totalCountries[wrongIndex].name.common });
+		}
+
+		// Create options array
+		let options = [
+			...wrongAnswers.map(({ name }) => ({
+				id: 0, // Temp ID (we will fix it later)
+				name,
+				isCorrect: false
+			})),
+			{
+				id: 0, // Temp ID (we will fix it later)
+				name: correctCountryName,
+				isCorrect: true
+			}
+		];
+
+		// Shuffle options
+		options = options.sort(() => Math.random() - 0.5);
+
+		// Assign unique IDs
+		options.forEach((option, index) => {
+			option.id = index;
+		});
+
+		return [correctCountryFlag, options];
+	}
 
 	// Get the next question
-	function nextQuestion() {
-		console.log('next question');
+	function validateAndNextQuestion() {
+		const queryselector = document.querySelector(
+			'input[name="hosting"]:checked'
+		) as HTMLInputElement;
+		console.log(queryselector.id, 'quesry selector id');
+		const id = parseInt(queryselector.id);
+		console.log('is the answer correct?', currentQuestionData.options[id].isCorrect);
+
+		if (progress < 5) {
+			if (currentQuestionData.options[id].isCorrect === true) {
+				results.push(true);
+			} else {
+				results.push(false);
+			}
+			progress++;
+			const options = createOptions();
+			currentQuestionData = {
+				flag: options[0],
+				options: options[1]
+			};
+		} else {
+			giveResults(results);
+		}
+	}
+
+	function giveResults(results: boolean[]) {
+		console.log(results, 'this is the results');
+		// const correctAnswers = results.filter((result) => result === true);
+		// console.log(correctAnswers, 'this is the correct answers');
+		// const wrongAnswers = results.filter((result) => result === false);
+		// console.log(wrongAnswers, 'this is the wrong answers');
 	}
 </script>
 
@@ -40,7 +132,7 @@
 				</div>
 				<h1 class="text-2xl font-bold text-sky-600 sm:text-3xl">Progress:</h1>
 				<div class="mt-3 h-2.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
-					<div class="h-2.5 rounded-full bg-sky-600" style="width: 25%"></div>
+					<div class="h-2.5 rounded-full bg-sky-600" style="width: {progress * 20}%"></div>
 				</div>
 			</div>
 		</div>
@@ -49,82 +141,34 @@
 			<div class="h-auto w-auto max-w-xs md:max-w-md">
 				<!-- where the flag goes :D -->
 				<img
-					src="https://images.unsplash.com/photo-1626836014893-37663794dca7?q=80&w=2646&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-					alt="United States Flag"
-					class="h-auto w-full"
+					src={currentQuestionData.flag}
+					alt="Flag of the country"
+					class="h-auto w-full border-2"
 				/>
 			</div>
 
 			<ul class="mt-4 grid w-full gap-6 md:grid-cols-2">
-				<li>
-					<input
-						type="radio"
-						id="hosting-small"
-						name="hosting"
-						value="hosting-small"
-						class="peer hidden"
-						required
-					/>
-					<label
-						for="hosting-small"
-						class="inline-flex w-full cursor-pointer items-center justify-between rounded-lg border border-sky-400 bg-sky-200 p-5 text-sky-900 peer-checked:border-sky-300 peer-checked:text-sky-600 hover:bg-sky-400 hover:text-sky-300 dark:border-sky-300 dark:bg-white dark:text-sky-400 dark:peer-checked:border-sky-600 dark:peer-checked:bg-sky-200 dark:peer-checked:bg-sky-200 dark:hover:bg-sky-300 dark:hover:text-sky-600"
-					>
-						<div class="block">
-							<div class="w-full text-lg font-semibold">Colombia</div>
-						</div>
-					</label>
-				</li>
-				<li>
-					<input
-						type="radio"
-						id="hosting-big"
-						name="hosting"
-						value="hosting-big"
-						class="peer hidden"
-					/>
-					<label
-						for="hosting-big"
-						class="dark:peer-checked:bg-sky100 inline-flex w-full cursor-pointer items-center justify-between rounded-lg border border-sky-400 bg-sky-200 p-5 text-sky-900 peer-checked:border-sky-300 peer-checked:text-sky-600 hover:bg-sky-400 hover:text-sky-300 dark:border-sky-300 dark:bg-white dark:text-sky-400 dark:peer-checked:border-sky-600 dark:peer-checked:bg-sky-200 dark:hover:bg-sky-300 dark:hover:text-sky-600"
-					>
-						<div class="block">
-							<div class="w-full text-lg font-semibold">Italy</div>
-						</div>
-					</label>
-				</li>
-				<li>
-					<input
-						type="radio"
-						id="hosting-medium"
-						name="hosting"
-						value="hosting-medium"
-						class="peer hidden"
-					/>
-					<label
-						for="hosting-medium"
-						class="dark:peer-checked:bg-sky100 inline-flex w-full cursor-pointer items-center justify-between rounded-lg border border-sky-400 bg-sky-200 p-5 text-sky-900 peer-checked:border-sky-300 peer-checked:text-sky-600 hover:bg-sky-400 hover:text-sky-300 dark:border-sky-300 dark:bg-white dark:text-sky-400 dark:peer-checked:border-sky-600 dark:peer-checked:bg-sky-200 dark:hover:bg-sky-300 dark:hover:text-sky-600"
-					>
-						<div class="block">
-							<div class="w-full text-lg font-semibold">Canada</div>
-						</div>
-					</label>
-				</li>
-				<li>
-					<input
-						type="radio"
-						id="hosting-tiny"
-						name="hosting"
-						value="hosting-tiny"
-						class="peer hidden"
-					/>
-					<label
-						for="hosting-tiny"
-						class="dark:peer-checked:bg-sky100 inline-flex w-full cursor-pointer items-center justify-between rounded-lg border border-sky-400 bg-sky-200 p-5 text-sky-900 peer-checked:border-sky-300 peer-checked:text-sky-600 hover:bg-sky-400 hover:text-sky-300 dark:border-sky-300 dark:bg-white dark:text-sky-400 dark:peer-checked:border-sky-600 dark:peer-checked:bg-sky-200 dark:hover:bg-sky-300 dark:hover:text-sky-600"
-					>
-						<div class="block">
-							<div class="w-full text-lg font-semibold">USA</div>
-						</div>
-					</label>
-				</li>
+				{#each currentQuestionData.options as option, index}
+					<li>
+						<input
+							type="radio"
+							id={option.id}
+							name="hosting"
+							value={option.name}
+							class="peer hidden"
+							required
+						/>
+						<label
+							for={option.id}
+							class="inline-flex w-full cursor-pointer items-center justify-between rounded-lg border border-sky-400 bg-sky-200 p-5 text-sky-900 peer-checked:border-sky-300 peer-checked:text-sky-600 hover:bg-sky-400 hover:text-sky-300 dark:border-sky-300 dark:bg-white dark:text-sky-400 dark:peer-checked:border-sky-600 dark:peer-checked:bg-sky-200 dark:peer-checked:bg-sky-200 dark:hover:bg-sky-300 dark:hover:text-sky-600"
+						>
+							<div class="block">
+								<div class="w-full text-lg font-semibold">{option.name}</div>
+							</div>
+						</label>
+					</li>
+				{/each}
+
 				<button
 					type="button"
 					class="me-2 mb-2 w-full rounded-lg border border-sky-400 px-5 py-2.5 text-start text-sm font-medium text-sky-700 hover:bg-sky-800 hover:text-white focus:ring-4 focus:ring-sky-300 focus:outline-none dark:border-sky-500 dark:text-sky-500 dark:hover:bg-sky-300 dark:hover:text-sky-500 dark:focus:ring-sky-800"
@@ -133,10 +177,17 @@
 
 				<button
 					type="button"
+					onclick={validateAndNextQuestion}
 					class="me-2 mb-2 w-full rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-start text-sm font-medium text-white hover:bg-gradient-to-bl focus:ring-4 focus:ring-cyan-300 focus:outline-none dark:focus:ring-cyan-800"
 					>Next</button
 				>
 			</ul>
 		</div>
+		{#if progress === 5}
+			<h1>results</h1>
+			{#each results as result}
+				<p>{result}</p>
+			{/each}
+		{/if}
 	</section>
 </main>
