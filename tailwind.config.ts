@@ -3,7 +3,7 @@ export default {
 	theme: {
 		extend: {
 			fontFamily: {
-				sans: ['Fira Code', 'monospace'], // Reemplaza la fuente por defecto
+				sans: ['Fira Code', 'monospace'],
 				serif: ['Fira Code', 'monospace'],
 				mono: ['Fira Code', 'monospace']
 			}

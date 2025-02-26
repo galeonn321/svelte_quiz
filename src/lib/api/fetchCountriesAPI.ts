@@ -6,6 +6,7 @@ export async function fetchCountries(): Promise<CountriesTypes[] | undefined> {
 		if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
 		const data: CountriesTypes[] = await res.json();
+
 		return data;
 	} catch (error) {
 		console.error('Failed to fetch countries: ', error);

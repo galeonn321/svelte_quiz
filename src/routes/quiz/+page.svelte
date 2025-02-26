@@ -1,20 +1,22 @@
 <script lang="ts">
-	import { fetchCountries } from '$lib/api/fetchCountriesAPI';
 	import { DotLottieSvelte } from '@lottiefiles/dotlottie-svelte';
 	import { onMount } from 'svelte';
 	import type { CountriesTypes } from '../../types/fetchCountries';
+	import { fetchCountries } from '$lib/api/fetchCountriesAPI';
 
 	let totalCountries: CountriesTypes[] = [];
 	let currentQuestion = 0 | 1 | 2 | 3;
 	let options: string[] = [];
+	let progress = 0 | 1 | 2 | 3;
 
 	// Fetch the data from the API
-	onMount(async () => {
-		const countries = await fetchCountries();
-		if (countries) {
-			totalCountries = countries;
-		}
-		console.log(totalCountries);
+	$effect(() => {
+		(async () => {
+			const countries = await fetchCountries();
+			if (countries) {
+				totalCountries = countries;
+			}
+		})();
 	});
 
 	//create the options
