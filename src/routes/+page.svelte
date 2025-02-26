@@ -17,13 +17,13 @@
 			<div class="aspect-square w-full max-w-xs md:max-w-md">
 				<DotLottieSvelte src="./planet.lottie" loop autoplay />
 			</div>
-
-			<button
-				type="button"
-				class="rounded-full bg-blue-700 px-6 py-3 text-white transition hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-			>
-				Begin
-			</button>
+			<a href="/quiz">
+				<button
+					type="button"
+					class="me-2 mb-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:ring-4 focus:ring-cyan-300 focus:outline-none dark:focus:ring-cyan-800"
+					>Start</button
+				>
+			</a>
 		</div>
 	</section>
 </main>
