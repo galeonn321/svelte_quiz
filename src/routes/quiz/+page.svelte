@@ -44,14 +44,16 @@
 		</div>
 
 		<div class="flex w-full flex-col items-center justify-center p-10 md:w-1/2">
-			<div class="aspect-square w-full max-w-xs md:max-w-md">
+			<div class="h-auto w-auto max-w-xs md:max-w-md">
 				<!-- where the flag goes :D -->
 				<img
 					src="https://images.unsplash.com/photo-1626836014893-37663794dca7?q=80&w=2646&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
 					alt="United States Flag"
+					class="h-auto w-full"
 				/>
 			</div>
-			<ul class="grid w-full gap-6 md:grid-cols-2">
+
+			<ul class="mt-4 grid w-full gap-6 md:grid-cols-2">
 				<li>
 					<input
 						type="radio"
@@ -100,7 +102,7 @@
 						class="dark:peer-checked:bg-sky100 inline-flex w-full cursor-pointer items-center justify-between rounded-lg border border-sky-400 bg-sky-200 p-5 text-sky-900 peer-checked:border-sky-300 peer-checked:text-sky-600 hover:bg-sky-400 hover:text-sky-300 dark:border-sky-300 dark:bg-white dark:text-sky-400 dark:peer-checked:border-sky-600 dark:peer-checked:bg-sky-200 dark:hover:bg-sky-300 dark:hover:text-sky-600"
 					>
 						<div class="block">
-							<div class="w-full text-lg font-semibold">Hell</div>
+							<div class="w-full text-lg font-semibold">Canada</div>
 						</div>
 					</label>
 				</li>
