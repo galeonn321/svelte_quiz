@@ -3,20 +3,19 @@
 	import type { CountriesList, CountriesTypes } from '../../types/fetchCountries';
 	import type { Option, QuestionType } from '../../types/questionType';
 	import { fetchCountries } from '$lib/api/fetchCountriesAPI';
-
 	let totalCountries: CountriesList = [];
 	let currentQuestionData: QuestionType = $state({
 		flag: '',
 		options: []
 	});
-	let progress = $state(1);
+	let progress = $state(0);
 	let results: boolean[] = [];
-
+	let finalScore = 0;
 	// $inspect(currentQuestionData, 'this is current question data');
-	$inspect(currentQuestionData.options, 'this is current question data options');
-	console.log(results, 'this is current results');
+	// $inspect(currentQuestionData.options, 'this is current question data options');
+	// console.log(results, 'this is current results');
 	// $inspect(results, 'this is current results');
-	// $inspect(progress, 'this is current progress');
+	$inspect(progress, 'this is current progress');
 
 	// Fetch the data from the API
 	$effect(() => {
@@ -32,7 +31,7 @@
 			}
 		})();
 	});
-
+	//Get a random number for the options
 	function getRandomNumber(excludedIndexes: Set<number> = new Set()): number {
 		let randomNumber;
 		do {
@@ -84,7 +83,7 @@
 		return [correctCountryFlag, options];
 	}
 
-	// Get the next question
+	// Validate and Get the next question
 	function validateAndNextQuestion() {
 		const queryselector = document.querySelector(
 			'input[name="hosting"]:checked'
@@ -93,7 +92,7 @@
 		const id = parseInt(queryselector.id);
 		console.log('is the answer correct?', currentQuestionData.options[id].isCorrect);
 
-		if (progress < 5) {
+		if (progress <= 3) {
 			if (currentQuestionData.options[id].isCorrect === true) {
 				results.push(true);
 			} else {
@@ -111,11 +110,9 @@
 	}
 
 	function giveResults(results: boolean[]) {
-		console.log(results, 'this is the results');
-		// const correctAnswers = results.filter((result) => result === true);
-		// console.log(correctAnswers, 'this is the correct answers');
-		// const wrongAnswers = results.filter((result) => result === false);
-		// console.log(wrongAnswers, 'this is the wrong answers');
+		console.log(results, 'this is the results from the giveResults function');
+		const correctAnswers = results.filter((result) => result === true);
+		finalScore = correctAnswers.length;
 	}
 </script>
 
@@ -132,7 +129,7 @@
 				</div>
 				<h1 class="text-2xl font-bold text-sky-600 sm:text-3xl">Progress:</h1>
 				<div class="mt-3 h-2.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
-					<div class="h-2.5 rounded-full bg-sky-600" style="width: {progress * 20}%"></div>
+					<div class="h-2.5 rounded-full bg-sky-600" style="width: {progress * 25}%"></div>
 				</div>
 			</div>
 		</div>
@@ -168,26 +165,31 @@
 						</label>
 					</li>
 				{/each}
+				<div class="flex justify-between md:col-span-2">
+					{#if progress <= 3}
+						<button
+							type="button"
+							class="me-2 mb-2 w-full rounded-lg border border-sky-400 px-5 py-2.5 text-start text-sm font-medium text-sky-700 hover:bg-sky-800 hover:text-white focus:ring-4 focus:ring-sky-300 focus:outline-none dark:border-sky-500 dark:text-sky-500 dark:hover:bg-sky-300 dark:hover:text-sky-500 dark:focus:ring-sky-800"
+							>Previous</button
+						>
 
-				<button
-					type="button"
-					class="me-2 mb-2 w-full rounded-lg border border-sky-400 px-5 py-2.5 text-start text-sm font-medium text-sky-700 hover:bg-sky-800 hover:text-white focus:ring-4 focus:ring-sky-300 focus:outline-none dark:border-sky-500 dark:text-sky-500 dark:hover:bg-sky-300 dark:hover:text-sky-500 dark:focus:ring-sky-800"
-					>Previous</button
-				>
-
-				<button
-					type="button"
-					onclick={validateAndNextQuestion}
-					class="me-2 mb-2 w-full rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-start text-sm font-medium text-white hover:bg-gradient-to-bl focus:ring-4 focus:ring-cyan-300 focus:outline-none dark:focus:ring-cyan-800"
-					>Next</button
-				>
+						<button
+							type="button"
+							onclick={validateAndNextQuestion}
+							class="me-2 mb-2 w-full rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-start text-sm font-medium text-white hover:bg-gradient-to-bl focus:ring-4 focus:ring-cyan-300 focus:outline-none dark:focus:ring-cyan-800"
+							>Next</button
+						>
+					{:else}
+						<a href="/results">
+							<button
+								type="button"
+								class="me-2 mb-2 w-full rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-start text-sm font-medium text-white hover:bg-gradient-to-bl focus:ring-4 focus:ring-cyan-300 focus:outline-none dark:focus:ring-cyan-800"
+								>Select and see results</button
+							>
+						</a>
+					{/if}
+				</div>
 			</ul>
 		</div>
-		{#if progress === 5}
-			<h1>results</h1>
-			{#each results as result}
-				<p>{result}</p>
-			{/each}
-		{/if}
 	</section>
 </main>
